@@ -24,6 +24,7 @@ class Game {
     #stars;
     #sticks;
     #ball;
+    #stop = true;
 
     constructor(canvas){
         // canvas
@@ -93,6 +94,23 @@ class Game {
         */
 
         this.#ball.draw(this.#ctx);
+
+        /*
+        Game stop screen
+        */
+
+        if (this.#stop){
+            this.#ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+            this.#ctx.fillRect(ox, oy, dx, dy);
+            this.#ctx.font = ""
+            this.#ctx.fillText("Press Enter to start", ox + dx/3, oy + dy/2);
+        }
+    }
+
+    play(){
+        // Check collision
+        // Apply collision
+        // Draw    
     }
 
     #randomStars(ox, oy, dx, dy, nb){
@@ -181,5 +199,3 @@ function gameLoop() {
     // Call the function gameLoop 60 frames per second
     window.requestAnimationFrame(gameLoop);
 }
-
-gameLoop();
