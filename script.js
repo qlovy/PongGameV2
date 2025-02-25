@@ -37,6 +37,7 @@ class Game {
         let offx = 60;
         let offy = 150;
         this.#sticks = [new Stick(offx, offy, "red"), new Stick(this.#width - offx - 20, offy, "blue")];
+        this.#ball = new Ball(this.#width/2, offy + 50);
         
         this.#draw();
     }
@@ -86,6 +87,12 @@ class Game {
         for (let i=0; i<this.#sticks.length; i++){
             this.#sticks[i].draw(this.#ctx);
         }
+
+        /*
+        Ball
+        */
+
+        this.#ball.draw(this.#ctx);
     }
 
     #randomStars(ox, oy, dx, dy, nb){
@@ -140,6 +147,26 @@ class Stick {
         ctx.strokeStyle = "white";
         ctx.lineWidth = 2;
         ctx.strokeRect(this.#x, this.#y, this.#width, this.#height);
+    }
+}
+
+class Ball {
+    #x;
+    #y;
+    #radius = 10;
+    #velocity = 0.1;
+    #color = "white";
+
+    constructor(x, y){
+        this.#x = x;
+        this.#y = y;
+    }
+
+    draw(ctx){
+        ctx.fillStyle = this.#color;
+        ctx.beginPath();
+        ctx.arc(this.#x, this.#y, this.#radius, 0, 360);
+        ctx.fill();
     }
 }
 
