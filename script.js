@@ -16,30 +16,40 @@
 
 class Game {
     // Private variables
-    #canvas = document.getElementById("canvas");
-    #width = this.#canvas.width = 800;
-    #height = this.#canvas.height = 600;
-    #ctx = this.#canvas.getContext("2d");
+    #canvas;
+    #width;
+    #height;
+    #ctx;
 
     #stars;
     #sticks;
     #ball;
 
-    // Private method
-
-    // Public method
-
-    init(){
-        let offx = 20;
-        let offy = 20;
-        this.#sticks.push()
+    constructor(canvas){
+        // canvas
+        this.#canvas = canvas;
+        this.#width = canvas.width = 800;
+        this.#height = canvas.height = 600;
+        this.#ctx = canvas.getContext("2d");
+        
+        
+        this.#setListener();
+        let offx = 60;
+        let offy = 150;
+        this.#sticks = [new Stick(offx, offy, "red"), new Stick(this.#width - offx - 20, offy, "blue")];
+        
+        this.#draw();
     }
 
+    // Private method
     #draw() {
         this.#ctx.fillStyle = "blue";
         this.#ctx.fillRect(0, 0, this.#width, this.#height);
 
-        // Background, dark blue with yellow stars, stroke white rect
+        /*
+        Background, dark blue with yellow stars, stroke white rect
+        */
+
         let ox = 50;
         let oy = 50;
         let dx = 700;
@@ -68,6 +78,14 @@ class Game {
             this.#ctx.arc(star.x, star.y, star.r, 0, 360);
             this.#ctx.fill();
         }
+
+        /*
+        Sticks
+        */
+
+        for (let i=0; i<this.#sticks.length; i++){
+            this.#sticks[i].draw(this.#ctx);
+        }
     }
 
     #randomStars(ox, oy, dx, dy, nb){
@@ -82,7 +100,7 @@ class Game {
     }
 
     // Define a listener on the canvas
-    setListener() {
+    #setListener() {
         // Make the canvas handle keyboard event, src=https://gamedev.stackexchange.com/questions/50223/receiving-keyboard-events-on-a-canvas-in-javascript
         this.#canvas.setAttribute("tabindex", "0");
         this.#canvas.focus();
@@ -97,6 +115,9 @@ class Game {
             console.log("Your press a");
         }
     }
+
+    // Public method
+
 }
 
 class Stick {
@@ -117,18 +138,18 @@ class Stick {
         ctx.fillStyle = this.#color;
         ctx.fillRect(this.#x, this.#y, this.#width, this.#height);
         ctx.strokeStyle = "white";
+        ctx.lineWidth = 2;
         ctx.strokeRect(this.#x, this.#y, this.#width, this.#height);
     }
 }
 
-// Initialization of the game's object
-const pongGame = new Game;
+// Get page canvas
+const canvas = document.getElementById("canvas");
 
-// add a listener
-pongGame.setListener();
+// Initialization of the game's object
+const pongGame = new Game(canvas);
 
 function gameLoop() {
-    pongGame.draw();
 
     // Call the function gameLoop 60 frames per second
     window.requestAnimationFrame(gameLoop);
