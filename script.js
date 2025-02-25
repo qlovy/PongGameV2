@@ -26,6 +26,8 @@ class Game {
     #ball;
     #stop = true;
 
+    #gameArea = {x: 50, y: 50, w: 700, h: 300}
+
     constructor(canvas){
         // canvas
         this.#canvas = canvas;
@@ -35,10 +37,9 @@ class Game {
         
         
         this.#setListener();
-        let offx = 60;
-        let offy = 150;
-        this.#sticks = [new Stick(offx, offy, "red"), new Stick(this.#width - offx - 20, offy, "blue")];
-        this.#ball = new Ball(this.#width/2, offy + 50);
+        let offX = 20;
+        this.#sticks = [new Stick(this.#gameArea.x + offX, this.#gameArea.y + this.#gameArea.h/2 - 50, "red"), new Stick(this.#gameArea.x + this.#gameArea.w - 20 - offX, this.#gameArea.y + this.#gameArea.h/2 - 50, "blue")];
+        this.#ball = new Ball(this.#width/2, this.#gameArea.y + this.#gameArea.h/2);
         
         this.#draw();
     }
@@ -52,25 +53,22 @@ class Game {
         Background, dark blue with yellow stars, stroke white rect
         */
 
-        let ox = 50;
-        let oy = 50;
-        let dx = 700;
-        let dy = 300;
+
         let nbStars = 80;
 
         // Dark blue sky
         this.#ctx.fillStyle = "#192a56";
-        this.#ctx.fillRect(ox, oy, dx, dy);
+        this.#ctx.fillRect(this.#gameArea.x, this.#gameArea.y, this.#gameArea.w, this.#gameArea.h);
 
         this.#ctx.strokeStyle = "white";
         this.#ctx.lineWidth = 3;
-        this.#ctx.strokeRect(ox, oy, dx, dy);
+        this.#ctx.strokeRect(this.#gameArea.x, this.#gameArea.y, this.#gameArea.w, this.#gameArea.h);
 
         // Yellow stars
 
         // Setup stars one time
         if (this.#stars === undefined){
-            this.#stars = this.#randomStars(ox, oy, dx, dy, nbStars);
+            this.#stars = this.#randomStars(this.#gameArea.x, this.#gameArea.y, this.#gameArea.w, this.#gameArea.h, nbStars);
         }
 
         this.#ctx.fillStyle = "yellow";
@@ -101,16 +99,11 @@ class Game {
 
         if (this.#stop){
             this.#ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
-            this.#ctx.fillRect(ox, oy, dx, dy);
-            this.#ctx.font = ""
-            this.#ctx.fillText("Press Enter to start", ox + dx/3, oy + dy/2);
+            this.#ctx.fillRect(this.#gameArea.x, this.#gameArea.y, this.#gameArea.w, this.#gameArea.h);
+            this.#ctx.fillStyle = "white";
+            this.#ctx.font = "30px sans-serif";
+            this.#ctx.fillText("Press Enter to start", this.#gameArea.x + this.#gameArea.w/3, this.#gameArea.y + this.#gameArea.h/2);
         }
-    }
-
-    play(){
-        // Check collision
-        // Apply collision
-        // Draw    
     }
 
     #randomStars(ox, oy, dx, dy, nb){
@@ -131,18 +124,31 @@ class Game {
         this.#canvas.focus();
 
         // Listen to keydown event
-        this.#canvas.addEventListener("keydown", this.#getKey);
+        this.#canvas.addEventListener("keydown", this.#getKey.bind(this));  // bind is for counter the lost of the ref "this" which can happend with multiple call in an object.
     }
 
     // Manage key event
     #getKey(e) {
-        if (e.key === "a") {
-            console.log("Your press a");
+        let key = e.key;
+        if (key === 'Enter' && this.#stop){
+            this.#stop = false;
+            gameLoop();
         }
     }
 
-    // Public method
+    #checkCollision(){
+        // Check wall
 
+        // Check sticks
+    }
+
+    // Public method
+    play(){
+        // Check collision
+        // Apply collision
+        // Draw
+        this.#draw();
+    }
 }
 
 class Stick {
@@ -166,6 +172,14 @@ class Stick {
         ctx.lineWidth = 2;
         ctx.strokeRect(this.#x, this.#y, this.#width, this.#height);
     }
+
+    getX(){return this.#x};
+
+    getY(){return this.#y};
+
+    getWidth(){return this.#width};
+
+    getHeight(){return this.#height};
 }
 
 class Ball {
@@ -195,7 +209,7 @@ const canvas = document.getElementById("canvas");
 const pongGame = new Game(canvas);
 
 function gameLoop() {
-
+    pongGame.play();
     // Call the function gameLoop 60 frames per second
     window.requestAnimationFrame(gameLoop);
 }
