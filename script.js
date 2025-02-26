@@ -25,6 +25,8 @@ class Game {
     #sticks;
     #ball;
     #stop = true;
+    #player1Score = 0;
+    #player2Score = 0;
 
     #gameArea = {x: 50, y: 50, w: 700, h: 300}
 
@@ -133,19 +135,60 @@ class Game {
         if (key === 'Enter' && this.#stop){
             this.#stop = false;
             gameLoop();
+        }else if (key === 'w'){
+            this.#sticks[0].moveUp();
+        }else if (key === 's'){
+            this.#sticks[0].moveDown();
+        }else if (key === 'ArrowUp'){
+            this.#sticks[1].moveUp();
+        }else if (key === 'ArrowDown'){
+            this.#sticks[1].moveDown();
         }
     }
 
     #checkCollision(){
-        // Check wall
+        // Check collision with the ball
+        // Check walls
+        
+        // Up wall
+        if (this.#ball.isCollisionWith(this.#gameArea.x, 0, this.#gameArea.x + this.#gameArea.w, this.#gameArea.y)){
+            return 'y';
+        }
+        // Down wall
+        if (this.#ball.isCollisionWith(this.#gameArea.x, this.#gameArea.y + this.#gameArea.h, this.#gameArea.w, this.#gameArea.y + 2 * this.#gameArea.h)){
+            return 'y';
+        }
+        
+        // Right wall
+        if (this.#ball.isCollisionWith(this.#gameArea.x, this.#gameArea.y, -this.#gameArea.w, this.#gameArea.h)){
+            return 'r';
+        }
+        // Left wall
+        if (this.#ball.isCollisionWith(this.#gameArea.x + this.#gameArea.h, this.#gameArea.y, this.#gameArea.x + 2 * this.#gameArea.w, this.#gameArea.h)){
+            return 'l';
+        }
 
         // Check sticks
+        for (let i=0; i<this.#sticks.length; i++){
+            if (this.#ball.isCollisionWith(this.#sticks[i].getX(), this.#sticks[i].getY(), this.#sticks[i].getWidth(), this.#sticks[i].getHeight())){
+                return 'x';
+            }
+        }
+        return ''
     }
 
     // Public method
     play(){
         // Check collision
+        let direction = this.#checkCollision();
+        if (direction === 'l'){
+            this.#player1Score += 1;
+        }else if (direction === 'r'){
+            this.#player2Score += 1;
+        }
         // Apply collision
+        this.#ball.rebound(direction);
+        this.#ball.move();
         // Draw
         this.#draw();
     }
@@ -156,7 +199,7 @@ class Stick {
     #y;
     #width = 20;
     #height = 100;
-    #velocity = 0.1;
+    #velocity = 4;
     #color;
 
     constructor(x, y, color) {
@@ -173,6 +216,14 @@ class Stick {
         ctx.strokeRect(this.#x, this.#y, this.#width, this.#height);
     }
 
+    moveUp(){
+        this.#y -= this.#velocity;
+    }
+
+    moveDown(){
+        this.#y += this.#velocity;
+    }
+
     getX(){return this.#x};
 
     getY(){return this.#y};
@@ -186,7 +237,9 @@ class Ball {
     #x;
     #y;
     #radius = 10;
-    #velocity = 0.1;
+    #velocityX = -1;
+    #velocityY = 1;
+    
     #color = "white";
 
     constructor(x, y){
@@ -199,6 +252,26 @@ class Ball {
         ctx.beginPath();
         ctx.arc(this.#x, this.#y, this.#radius, 0, 360);
         ctx.fill();
+    }
+
+    move(){
+        this.#x += this.#velocityX;
+        this.#y += this.#velocityY;
+    }
+
+    isCollisionWith(x, y, w, h){
+        return this.#x >= x && this.#x <= (x + w) && this.#y >= y && this.#y <= (y + h);
+    }
+
+    rebound(direction){
+        if (direction === 'x'){
+            this.#velocityX *= -1;
+        }else if (direction === 'y'){
+            this.#velocityY *= -1;
+        }else if (direction === 'xy'){
+            this.#velocityX *= -1;
+            this.#velocityY *= -1;
+        }
     }
 }
 
