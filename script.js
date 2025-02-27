@@ -109,6 +109,11 @@ class Game {
             this.#ctx.font = "30px sans-serif";
             this.#ctx.fillText("Press Enter to start", this.#gameArea.x + this.#gameArea.w/3, this.#gameArea.y + this.#gameArea.h/2);
         }
+
+        /*
+        Scoer
+        */
+        this.#drawScore();
     }
 
     #randomStars(ox, oy, dx, dy, nb){
@@ -178,6 +183,23 @@ class Game {
             }
         }
         return ''
+    }
+
+    #drawScore(){
+        let offX = 50;
+        let offY = 50;
+        // Red player
+        this.#ctx.font = "30px sans-serif";
+        this.#ctx.fillStyle = "red";
+        this.#ctx.fillRect(this.#gameArea.x + this.#gameArea.w/2 - offX, this.#gameArea.y + this.#gameArea.h, this.#gameArea.x + this.#gameArea.w/2 - 5, this.#gameArea.y + this.#gameArea.h + offY);
+        this.#ctx.fillStyle = "white";
+        this.#ctx.fillText(this.#player1Score, this.#gameArea.x + this.#gameArea.w/2 - offX/2, this.#gameArea.y + this.#gameArea.h + offY/2);
+
+        // Blue player
+        this.#ctx.fillStyle = "blue";
+        this.#ctx.fillRect(this.#gameArea.x + this.#gameArea.w/2 + 5, this.#gameArea.y + this.#gameArea.h, this.#gameArea.x + this.#gameArea.w/2 + offX, this.#gameArea.y + this.#gameArea.h + offY)
+        this.#ctx.fillStyle = "white";
+        this.#ctx.fillText(this.#player2Score, this.#gameArea.x + this.#gameArea.w/2 + offX/2, this.#gameArea.y + this.#gameArea.h + offY/2);
     }
 
     // Public method
