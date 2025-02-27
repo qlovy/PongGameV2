@@ -39,11 +39,14 @@ class Game {
         
         
         this.#setListener();
+        this.#initObject();
+        this.#draw();
+    }
+
+    #initObject(){
         let offX = 20;
         this.#sticks = [new Stick(this.#gameArea.x + offX, this.#gameArea.y + this.#gameArea.h/2 - 50, "red"), new Stick(this.#gameArea.x + this.#gameArea.w - 20 - offX, this.#gameArea.y + this.#gameArea.h/2 - 50, "blue")];
         this.#ball = new Ball(this.#width/2, this.#gameArea.y + this.#gameArea.h/2);
-        
-        this.#draw();
     }
 
     // Private method
@@ -160,11 +163,11 @@ class Game {
         }
         
         // Right wall
-        if (this.#ball.isCollisionWith(this.#gameArea.x, this.#gameArea.y, -this.#gameArea.w, this.#gameArea.h)){
+        if (this.#ball.isCollisionWith(this.#gameArea.x + this.#gameArea.w, this.#gameArea.y, this.#gameArea.x + 2*this.#gameArea.w, this.#gameArea.h)){
             return 'r';
         }
         // Left wall
-        if (this.#ball.isCollisionWith(this.#gameArea.x + this.#gameArea.h, this.#gameArea.y, this.#gameArea.x + 2 * this.#gameArea.w, this.#gameArea.h)){
+        if (this.#ball.isCollisionWith(0, this.#gameArea.y, this.#gameArea.x, this.#gameArea.h)){
             return 'l';
         }
 
@@ -181,16 +184,25 @@ class Game {
     play(){
         // Check collision
         let direction = this.#checkCollision();
-        if (direction === 'l'){
-            this.#player1Score += 1;
-        }else if (direction === 'r'){
-            this.#player2Score += 1;
+        if (direction === 'l' || direction === 'r'){
+            this.#initObject();
+            if (direction === 'l'){
+                this.#player1Score += 1;
+            }else if (direction === 'r'){
+                this.#player2Score += 1;
+            }
+            setTimeout(gameLoop, 2000);
         }
         // Apply collision
         this.#ball.rebound(direction);
         this.#ball.move();
         // Draw
         this.#draw();
+        
+        if (direction !== 'l' && direction !== 'r'){
+            // Call the function gameLoop 60 frames per second
+            window.requestAnimationFrame(gameLoop);
+        }
     }
 }
 
@@ -283,6 +295,4 @@ const pongGame = new Game(canvas);
 
 function gameLoop() {
     pongGame.play();
-    // Call the function gameLoop 60 frames per second
-    window.requestAnimationFrame(gameLoop);
 }
