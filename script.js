@@ -51,12 +51,11 @@ class Game {
 
     // Private method
     #draw() {
-        this.#ctx.fillStyle = "blue";
-        this.#ctx.fillRect(0, 0, this.#width, this.#height);
-
         /*
         Background, dark blue with yellow stars, stroke white rect
         */
+       this.#ctx.fillStyle = "white";
+       this.#ctx.fillRect(0, 0, this.#width, this.#height);
 
 
         let nbStars = 80;
@@ -131,7 +130,7 @@ class Game {
     #setListener() {
         // Make the canvas handle keyboard event, src=https://gamedev.stackexchange.com/questions/50223/receiving-keyboard-events-on-a-canvas-in-javascript
         this.#canvas.setAttribute("tabindex", "0");
-        this.#canvas.focus();
+        //this.#canvas.focus(); Make appear a red bar around the canvas and doesn't affect keyboard event when remove.
 
         // Listen to keydown event
         this.#canvas.addEventListener("keydown", this.#getKey.bind(this));  // bind is for counter the lost of the ref "this" which can happend with multiple call in an object.
@@ -188,18 +187,19 @@ class Game {
     #drawScore(){
         let offX = 50;
         let offY = 50;
+        let dy = 2;
         // Red player
         this.#ctx.font = "30px sans-serif";
         this.#ctx.fillStyle = "red";
-        this.#ctx.fillRect(this.#gameArea.x + this.#gameArea.w/2 - offX, this.#gameArea.y + this.#gameArea.h, this.#gameArea.x + this.#gameArea.w/2 - 5, this.#gameArea.y + this.#gameArea.h + offY);
+        this.#ctx.fillRect(this.#gameArea.x + this.#gameArea.w/2 - offX, this.#gameArea.y + this.#gameArea.h + dy, offX, offY);
         this.#ctx.fillStyle = "white";
-        this.#ctx.fillText(this.#player1Score, this.#gameArea.x + this.#gameArea.w/2 - offX/2, this.#gameArea.y + this.#gameArea.h + offY/2);
+        this.#ctx.fillText(this.#player1Score, this.#gameArea.x + this.#gameArea.w/2 - 2*offX/3, this.#gameArea.y + this.#gameArea.h + 2*offY/3 + dy);
 
         // Blue player
         this.#ctx.fillStyle = "blue";
-        this.#ctx.fillRect(this.#gameArea.x + this.#gameArea.w/2 + 5, this.#gameArea.y + this.#gameArea.h, this.#gameArea.x + this.#gameArea.w/2 + offX, this.#gameArea.y + this.#gameArea.h + offY)
+        this.#ctx.fillRect(this.#gameArea.x + this.#gameArea.w/2, this.#gameArea.y + this.#gameArea.h + dy, offX, offY);
         this.#ctx.fillStyle = "white";
-        this.#ctx.fillText(this.#player2Score, this.#gameArea.x + this.#gameArea.w/2 + offX/2, this.#gameArea.y + this.#gameArea.h + offY/2);
+        this.#ctx.fillText(this.#player2Score, this.#gameArea.x + this.#gameArea.w/2 + offX/3, this.#gameArea.y + this.#gameArea.h + 2*offY/3 + dy);
     }
 
     // Public method
@@ -207,12 +207,12 @@ class Game {
         // Check collision
         let direction = this.#checkCollision();
         if (direction === 'l' || direction === 'r'){
-            this.#initObject();
             if (direction === 'l'){
                 this.#player1Score += 1;
             }else if (direction === 'r'){
                 this.#player2Score += 1;
             }
+            this.#initObject();
             setTimeout(gameLoop, 2000);
         }
         // Apply collision
