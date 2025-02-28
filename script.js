@@ -202,6 +202,23 @@ class Game {
         this.#ctx.fillText(this.#player2Score, this.#gameArea.x + this.#gameArea.w/2 + offX/3, this.#gameArea.y + this.#gameArea.h + 2*offY/3 + dy);
     }
 
+    #drawFinish(){
+        if (this.#player1Score === 6){
+            this.#ctx.fillStyle = "#e74c3c";
+            this.#ctx.fillRect(this.#gameArea.x, this.#gameArea.y, this.#gameArea.w, this.#gameArea.h);
+            this.#ctx.fillStyle = "white";
+            this.#ctx.font = "30px sans serif"
+            this.#ctx.fillText("Player 1 Win !", this.#gameArea.x + 2 * this.#gameArea.w/5, this.#gameArea.y + this.#gameArea.h/2);
+
+        }else{
+            this.#ctx.fillStyle = "#2980b9";
+            this.#ctx.fillRect(this.#gameArea.x, this.#gameArea.y, this.#gameArea.w, this.#gameArea.h);
+            this.#ctx.fillStyle = "white";
+            this.#ctx.font = "30px sans serif"
+            this.#ctx.fillText("Player 2 Win !", this.#gameArea.x + 2 * this.#gameArea.w/5, this.#gameArea.y + this.#gameArea.h/2);
+        }
+    }
+
     // Public method
     play(){
         // Check collision
@@ -220,10 +237,12 @@ class Game {
         this.#ball.move();
         // Draw
         this.#draw();
-        
-        if (direction !== 'l' && direction !== 'r'){
+        if (direction !== 'l' && direction !== 'r' && this.#player1Score !== 6 && this.#player2Score !== 6){
             // Call the function gameLoop 60 frames per second
             window.requestAnimationFrame(gameLoop);
+        }
+        if (this.#player1Score === 6 || this.#player2Score === 6){
+            this.#drawFinish();
         }
     }
 }
