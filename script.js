@@ -27,8 +27,8 @@ class Game {
     #stop = true;
     #player1Score = 0;
     #player2Score = 0;
-
-    #gameArea = {x: 50, y: 50, w: 700, h: 300}
+    #gameArea = {x: 50, y: 50, w: 700, h: 300};
+    #over = false;
 
     constructor(canvas){
         // canvas
@@ -142,14 +142,16 @@ class Game {
         if (key === 'Enter' && this.#stop){
             this.#stop = false;
             gameLoop();
-        }else if (key === 'w'){
+        }else if (key === 'w' && this.#sticks[0].getY() > this.#gameArea.y){
             this.#sticks[0].moveUp();
-        }else if (key === 's'){
+        }else if (key === 's' && (this.#sticks[0].getY() + this.#sticks[0].getHeight()) <  this.#gameArea.y + this.#gameArea.h){
             this.#sticks[0].moveDown();
-        }else if (key === 'ArrowUp'){
+        }else if (key === 'ArrowUp' && this.#sticks[1].gety <  this.#gameArea.y){
             this.#sticks[1].moveUp();
-        }else if (key === 'ArrowDown'){
-            this.#sticks[1].moveDown();
+        }else if (key === 'ArrowDown' && (this.#sticks[1].getY() + this.#sticks[1].getHeight()) <  this.#gameArea.y + this.#gameArea.h){
+            this.#sticks[1].moveDown(); 
+        }else if (key === 'r' && this.#over){
+            this.#restart();
         }
     }
 
@@ -219,6 +221,16 @@ class Game {
         }
     }
 
+    #restart(){
+        // Reset player's score
+        this.#player1Score = 0;
+        this.#player2Score = 0;
+        this.#stop = true;
+
+        this.#initObject().bind(this);
+        this.#draw().bind(this);
+    }
+
     // Public method
     play(){
         // Check collision
@@ -242,6 +254,7 @@ class Game {
             window.requestAnimationFrame(gameLoop);
         }
         if (this.#player1Score === 6 || this.#player2Score === 6){
+            this.#over = true;
             this.#drawFinish();
         }
     }
