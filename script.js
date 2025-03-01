@@ -326,7 +326,7 @@ class Ball {
     }
 
     isCollisionWith(x, y, w, h){
-        return this.#x >= x && this.#x <= (x + w) && this.#y >= y && this.#y <= (y + h);
+        return this.#x + this.#radius >= x && this.#x - this.#radius <= (x + w) && this.#y + this.#radius >= y && this.#y - this.#radius <= (y + h);
     }
 
     rebound(direction){
