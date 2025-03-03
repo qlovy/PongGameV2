@@ -146,7 +146,7 @@ class Game {
             this.#sticks[0].moveUp();
         }else if (key === 's' && (this.#sticks[0].getY() + this.#sticks[0].getHeight()) <  this.#gameArea.y + this.#gameArea.h){
             this.#sticks[0].moveDown();
-        }else if (key === 'ArrowUp' && this.#sticks[1].gety <  this.#gameArea.y){
+        }else if (key === 'ArrowUp' && this.#sticks[1].getY() >  this.#gameArea.y){
             this.#sticks[1].moveUp();
         }else if (key === 'ArrowDown' && (this.#sticks[1].getY() + this.#sticks[1].getHeight()) <  this.#gameArea.y + this.#gameArea.h){
             this.#sticks[1].moveDown(); 
