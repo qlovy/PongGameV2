@@ -219,6 +219,8 @@ class Game {
             this.#ctx.font = "30px sans serif"
             this.#ctx.fillText("Player 2 Win !", this.#gameArea.x + 2 * this.#gameArea.w/5, this.#gameArea.y + this.#gameArea.h/2);
         }
+        this.#ctx.font = "20px sans serif";
+        this.#ctx.fillText("Press R to restart", this.#gameArea.x + 30, this.#gameArea.y + this.#gameArea.h - 40);
     }
 
     #restart(){
