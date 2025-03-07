@@ -29,6 +29,7 @@ class Game {
     #player2Score = 0;
     #gameArea = {x: 50, y: 50, w: 700, h: 300};
     #over = false;
+    #maxScore = 1;
 
     constructor(canvas){
         // canvas
@@ -110,7 +111,7 @@ class Game {
         }
 
         /*
-        Scoer
+        Score
         */
         this.#drawScore();
     }
@@ -205,7 +206,7 @@ class Game {
     }
 
     #drawFinish(){
-        if (this.#player1Score === 6){
+        if (this.#player1Score === this.#maxScore){
             this.#ctx.fillStyle = "#e74c3c";
             this.#ctx.fillRect(this.#gameArea.x, this.#gameArea.y, this.#gameArea.w, this.#gameArea.h);
             this.#ctx.fillStyle = "white";
@@ -225,12 +226,12 @@ class Game {
 
     #restart(){
         // Reset player's score
+        this.#stop = true;
         this.#player1Score = 0;
         this.#player2Score = 0;
-        this.#stop = true;
 
-        this.#initObject().bind(this);
-        this.#draw().bind(this);
+        this.#initObject();
+        this.#draw();
     }
 
     // Public method
@@ -243,19 +244,21 @@ class Game {
             }else if (direction === 'r'){
                 this.#player2Score += 1;
             }
-            this.#initObject();
-            setTimeout(gameLoop, 2000);
+            if (this.#player1Score !== this.#maxScore && this.#player2Score !== this.#maxScore){
+                this.#initObject();
+                setTimeout(gameLoop, 2000);
+            }
         }
         // Apply collision
         this.#ball.rebound(direction);
         this.#ball.move();
         // Draw
         this.#draw();
-        if (direction !== 'l' && direction !== 'r' && this.#player1Score !== 6 && this.#player2Score !== 6){
+        if (direction !== 'l' && direction !== 'r' && this.#player1Score !== this.#maxScore && this.#player2Score !== this.#maxScore){
             // Call the function gameLoop 60 frames per second
             window.requestAnimationFrame(gameLoop);
         }
-        if (this.#player1Score === 6 || this.#player2Score === 6){
+        if (this.#player1Score === this.#maxScore || this.#player2Score === this.#maxScore){
             this.#over = true;
             this.#drawFinish();
         }
